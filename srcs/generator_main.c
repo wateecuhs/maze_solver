@@ -6,7 +6,7 @@
 /*   By: wateecuhs <waticouzz@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 18:03:35 by wateecuhs         #+#    #+#             */
-/*   Updated: 2023/09/23 19:21:56 by wateecuhs        ###   ########.fr       */
+/*   Updated: 2023/09/24 20:11:07 by wateecuhs        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ int	main(int argc, char **argv)
 	int	width;
 	//int	complexity;
 
-	length = 10;
-	width = 5;
+	length = 40;
+	width = 20;
 	init_grid(length, width);
 	/* if (argc == 4)
 	{

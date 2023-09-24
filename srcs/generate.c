@@ -6,7 +6,7 @@
 /*   By: wateecuhs <waticouzz@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/23 17:14:19 by wateecuhs         #+#    #+#             */
-/*   Updated: 2023/09/24 17:57:41 by wateecuhs        ###   ########.fr       */
+/*   Updated: 2023/09/24 20:09:46 by wateecuhs        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,28 +87,61 @@ void	print_grid(t_grid **grid, int length, int width)
 	int	j;
 
 	i = 0;
+	j = 0;
+	printf("#");
+	while (j < length)
+	{
+		printf("##");
+		j++;
+	}
+	printf("\n");
 	while (i < width)
 	{
 		j = 0;
-		/* while (j < length)
-		{
-			printf("GRID[%d][%d] : %d %d %d %d ; %d\n", i, j, grid[i][j].south, grid[i][j].east, grid[i][j].north, grid[i][j].west, grid[i][j].visited);
-			j++;
-		} */
+		printf("#");
 		while (j < length)
 		{
-			if (grid[i][j].north == 1 && grid[i][j].west == 1)
-				printf("┌");
-			else if (grid[i][j].north == 1)
-				printf("─");
-			else if (grid[i][j].west == 1)
-				printf("│"); 
+			printf(".");
+			if (grid[i][j].east == 1)
+			{
+				printf("#");
+			}
+			else if (grid[i][j].east == 0)
+			{
+				printf(".");
+			}
 			j++;
+		}
+		printf("#");
+		if (grid[i][0].south != -1)
+		{
+			printf("\n");
+			printf("#");
+			j = 0;
+			while (j < length)
+			{
+				if (grid[i][j].south == 1)
+				{
+					printf("#");
+				}
+				else if (grid[i][j].south == 0)
+				{
+					printf(".");
+				}
+				printf("#");
+				j++;
+			}
 		}
 		printf("\n");
 		i++;
 	}
-
+	j = 0;
+	printf("#");
+	while (j < length)
+	{
+		printf("##");
+		j++;
+	}
 }
 void init_grid(int length, int width)
 {
