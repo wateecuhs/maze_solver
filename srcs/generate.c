@@ -6,12 +6,11 @@
 /*   By: wateecuhs <waticouzz@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/23 17:14:19 by wateecuhs         #+#    #+#             */
-/*   Updated: 2023/09/24 20:09:46 by wateecuhs        ###   ########.fr       */
+/*   Updated: 2023/09/25 16:44:58 by wateecuhs        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_gen.h"
-#include "ft.h"
+#include "../includes/ft.h"
 
 t_grid	*default_val(int length, int pos, int width)
 {
@@ -27,6 +26,7 @@ t_grid	*default_val(int length, int pos, int width)
 		ret[i].east = 1;
 		ret[i].west = 1;
 		ret[i].visited = 0;
+		ret[i].isPath = 0;
 		if (pos == 0)
 			ret[i].north = -1;
 		if (pos == width - 1)
@@ -40,46 +40,6 @@ t_grid	*default_val(int length, int pos, int width)
 	return (ret);
 }
 
-void	gen_dfs(t_grid **grid, int i, int j)
-{
-	int	random;
-	int	temp;
-
-	if (i == 0 && j == 0 && grid[i][j].visited == 1)
-		return ;
-	random = rand() % 4;
-	temp = 0;
-	grid[i][j].visited = 1;
-	while (temp < 4)
-	{
-		if (random == 0 && grid[i][j].south != -1 && grid[i + 1][j].visited == 0)
-		{
-			grid[i][j].south = 0;
-			grid[i + 1][j].north = 0;
-			gen_dfs(grid, i + 1, j);
-		}
-		if (random == 1 && grid[i][j].east != -1 && grid[i][j + 1].visited == 0)
-		{
-			grid[i][j].east = 0;
-			grid[i][j + 1].west = 0;
-			gen_dfs(grid, i, j + 1);
-		}
-		if (random == 2 && grid[i][j].north != -1 && grid[i - 1][j].visited == 0)
-		{
-			grid[i][j].north = 0;
-			grid[i - 1][j].south = 0;
-			gen_dfs(grid, i - 1, j);
-		}
-		if (random == 3 && grid[i][j].west != -1 && grid[i][j - 1].visited == 0)
-		{
-			grid[i][j].west = 0;
-			grid[i][j - 1].east = 0;
-			gen_dfs(grid, i, j - 1);
-		}
-		temp++;
-		random = (random + 1) % 4;
-	}
-}
 
 void	print_grid(t_grid **grid, int length, int width)
 {
@@ -88,47 +48,54 @@ void	print_grid(t_grid **grid, int length, int width)
 
 	i = 0;
 	j = 0;
-	printf("#");
+	printf("|");
 	while (j < length)
 	{
-		printf("##");
+		printf("||");
 		j++;
 	}
 	printf("\n");
 	while (i < width)
 	{
 		j = 0;
-		printf("#");
+		printf("|");
 		while (j < length)
 		{
-			printf(".");
+			if (grid[i][j].isPath == 0)
+				printf(" ");
+			else if (grid[i][j].isPath == 1)
+				printf("o");
+			else if (grid[i][j].isPath == 2)
+				printf("S");
+			else if (grid[i][j].isPath == 3)
+				printf("E");
 			if (grid[i][j].east == 1)
 			{
-				printf("#");
+				printf("|");
 			}
 			else if (grid[i][j].east == 0)
 			{
-				printf(".");
+				printf(" ");
 			}
 			j++;
 		}
-		printf("#");
+		printf("|");
 		if (grid[i][0].south != -1)
 		{
 			printf("\n");
-			printf("#");
+			printf("|");
 			j = 0;
 			while (j < length)
 			{
 				if (grid[i][j].south == 1)
 				{
-					printf("#");
+					printf("|");
 				}
 				else if (grid[i][j].south == 0)
 				{
-					printf(".");
+					printf(" ");
 				}
-				printf("#");
+				printf("|");
 				j++;
 			}
 		}
@@ -136,16 +103,19 @@ void	print_grid(t_grid **grid, int length, int width)
 		i++;
 	}
 	j = 0;
-	printf("#");
+	printf("|");
 	while (j < length)
 	{
-		printf("##");
+		printf("||");
 		j++;
 	}
 }
+
 void init_grid(int length, int width)
 {
 	t_grid	**grid;
+	coords start;
+	coords end;
 	int		i;
 
 	grid = (t_grid **)malloc(sizeof(t_grid *) * width);
@@ -157,6 +127,15 @@ void init_grid(int length, int width)
 	}
 	srand(time(NULL));
 	gen_dfs(grid, 0, 0);
+	print_grid(grid, length, width);
+	printf("\n\n");
+	start.x = 0;
+	start.y = 0;
+	end.x = width - 1;
+	end.y = length - 1;
+	bf_solve(grid, start, end, start);
+	grid[start.x][start.y].isPath = 2;
+	grid[end.x][end.y].isPath = 3;
 	print_grid(grid, length, width);
 	free_grid(grid, width);
 }

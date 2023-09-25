@@ -10,21 +10,27 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = ./srcs/main.c ./srcs/read_arg.c
-SRCS_GEN = ./srcs/generator_main.c ./srcs/lib.c ./srcs/generate.c ./srcs/grid_tools.c
+SRCS = ./srcs/read_arg.c $(SRCS_SOLVE_BF) $(SRCS_GEN)
+
+SRCS_GEN = ./srcs/generator_main.c ./srcs/lib.c ./srcs/generate.c ./srcs/grid_tools.c $(SRCS_GEN_DFS)
+SRCS_GEN_DFS = ./srcs/generating/dfs_gen.c
+
+SRCS_SOLVE_A = ./srcs/solving/A/a_solve.c
+SRCS_SOLVE_BF = ./srcs/solving/breadth_first/bf_solve.c
+
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
 OBJS=$(SRCS:.c=.o)
 OBJS_GEN=$(SRCS_GEN:.c=.o)
 NAME = maze_solver
 NAME_GEN = maze_generator
-HEADER_DIR    = includes/
-
-generator: gen
+HEADER_DIR    = ./includes/
 
 all: $(NAME)
 
-%.o : %.c $(HEADER_DIR)ft.h $(HEADER_DIR)ft_gen.h
+generator: gen
+
+%.o : %.c $(HEADER_DIR)ft.h
 	$(CC) -c $(CFLAGS) -I $(HEADER_DIR) -c $< -o $@
 
 $(NAME): $(OBJS)

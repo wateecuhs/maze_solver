@@ -6,11 +6,18 @@
 /*   By: wateecuhs <waticouzz@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/23 17:00:39 by wateecuhs         #+#    #+#             */
-/*   Updated: 2023/09/23 17:09:39 by wateecuhs        ###   ########.fr       */
+/*   Updated: 2023/09/25 12:37:18 by wateecuhs        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft.h"
+
+int	val_abs(int x)
+{
+	if (x < 0)
+		return (-x);
+	return (x);
+}
 
 int	ft_atoi(char *str)
 {
