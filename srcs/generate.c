@@ -6,7 +6,7 @@
 /*   By: wateecuhs <waticouzz@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/23 17:14:19 by wateecuhs         #+#    #+#             */
-/*   Updated: 2023/09/25 16:44:58 by wateecuhs        ###   ########.fr       */
+/*   Updated: 2023/09/27 18:51:10 by wateecuhs        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,17 @@ void	print_grid(t_grid **grid, int length, int width)
 
 	i = 0;
 	j = 0;
-	printf("|");
+	printf("\u2587");
 	while (j < length)
 	{
-		printf("||");
+		printf("\u2587\u2587");
 		j++;
 	}
 	printf("\n");
 	while (i < width)
 	{
 		j = 0;
-		printf("|");
+		printf("\u2587");
 		while (j < length)
 		{
 			if (grid[i][j].isPath == 0)
@@ -71,7 +71,7 @@ void	print_grid(t_grid **grid, int length, int width)
 				printf("E");
 			if (grid[i][j].east == 1)
 			{
-				printf("|");
+				printf("\u2587");
 			}
 			else if (grid[i][j].east == 0)
 			{
@@ -79,23 +79,23 @@ void	print_grid(t_grid **grid, int length, int width)
 			}
 			j++;
 		}
-		printf("|");
+		printf("\u2587");
 		if (grid[i][0].south != -1)
 		{
 			printf("\n");
-			printf("|");
+			printf("\u2587");
 			j = 0;
 			while (j < length)
 			{
 				if (grid[i][j].south == 1)
 				{
-					printf("|");
+					printf("\u2587");
 				}
 				else if (grid[i][j].south == 0)
 				{
 					printf(" ");
 				}
-				printf("|");
+				printf("\u2587");
 				j++;
 			}
 		}
@@ -103,12 +103,13 @@ void	print_grid(t_grid **grid, int length, int width)
 		i++;
 	}
 	j = 0;
-	printf("|");
+	printf("\u2587");
 	while (j < length)
 	{
-		printf("||");
+		printf("\u2587\u2587");
 		j++;
 	}
+	printf("\n");
 }
 
 void init_grid(int length, int width)
@@ -133,7 +134,7 @@ void init_grid(int length, int width)
 	start.y = 0;
 	end.x = width - 1;
 	end.y = length - 1;
-	bf_solve(grid, start, end, start);
+	bf_solve(grid, start, end);
 	grid[start.x][start.y].isPath = 2;
 	grid[end.x][end.y].isPath = 3;
 	print_grid(grid, length, width);

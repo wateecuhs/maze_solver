@@ -78,3 +78,14 @@ im gonna do the breadth first then  bidirectional breadth first then idk
 
 Didnt make anything work today.
 i need to use chained lists more
+
+27/09
+
+Im gonna make a chained lists kind of like a heap/priority queue (never done/used them before, i might be wrong)
+Instead of doing recursive fonction its a while loop that doesnt stop until either current node has no next node or current node data is end coords
+the node will have next and prev values so i can check if we've already been to current coords
+
+also had to add parent value to get the path that lead to solution and mark it as the solution
+using the isVisited value from grid struct to check it and i use the parent value to find the real head of the list and free it so now i can remove the prev value
+
+The print is fucking horrendous tho

@@ -10,13 +10,15 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = ./srcs/read_arg.c $(SRCS_SOLVE_BF) $(SRCS_GEN)
+SRCS = ./srcs/read_arg.c $(SRCS_SOLVE_BF) $(SRCS_GEN) $(SRCS_LIBS)
 
-SRCS_GEN = ./srcs/generator_main.c ./srcs/lib.c ./srcs/generate.c ./srcs/grid_tools.c $(SRCS_GEN_DFS)
+SRCS_GEN = ./srcs/generator_main.c ./srcs/generate.c ./srcs/grid_tools.c $(SRCS_GEN_DFS)
 SRCS_GEN_DFS = ./srcs/generating/dfs_gen.c
 
 SRCS_SOLVE_A = ./srcs/solving/A/a_solve.c
 SRCS_SOLVE_BF = ./srcs/solving/breadth_first/bf_solve.c
+
+SRCS_LIBS = ./srcs/libs/lib.c ./srcs/libs/lists.c
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g

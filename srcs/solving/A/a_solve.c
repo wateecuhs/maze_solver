@@ -6,7 +6,7 @@
 /*   By: wateecuhs <waticouzz@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/24 20:46:21 by wateecuhs         #+#    #+#             */
-/*   Updated: 2023/09/25 16:44:33 by wateecuhs        ###   ########.fr       */
+/*   Updated: 2023/09/27 18:50:27 by wateecuhs        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ coords	best_move(t_grid **grid, coords start, coords goal, coords current)
 	f4 = -1;
 	if (grid[current.x][current.y].south == 0)
 	{
-		f1 = abs(start.x - (current.x + 1)) + abs(start.y - current.y) + abs((current.x + 1) - goal.x) + abs(current.y - goal.y);printf("f1 : %d\n", f1);
+		f1 = abs(start.x - (current.x + 1)) + abs(start.y - current.y) + abs((current.x + 1) - goal.x) + abs(current.y - goal.y);
+		printf("f1 : %d\n", f1);
 		ret.x = current.x + 1;
 		printf("took value from f1\n");
 	}
