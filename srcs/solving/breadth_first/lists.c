@@ -6,12 +6,12 @@
 /*   By: wateecuhs <waticouzz@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 17:45:44 by wateecuhs         #+#    #+#             */
-/*   Updated: 2023/09/27 18:11:40 by wateecuhs        ###   ########.fr       */
+/*   Updated: 2023/09/30 00:36:05 by wateecuhs        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include "ft.h"
+#include "bf_solve.h"
 
 node	*ft_create_elem(coords data, node *parent)
 {

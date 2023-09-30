@@ -6,7 +6,7 @@
 /*   By: wateecuhs <waticouzz@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/23 17:14:19 by wateecuhs         #+#    #+#             */
-/*   Updated: 2023/09/27 18:51:10 by wateecuhs        ###   ########.fr       */
+/*   Updated: 2023/09/30 01:25:44 by wateecuhs        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ t_grid	*default_val(int length, int pos, int width)
 		ret[i].west = 1;
 		ret[i].visited = 0;
 		ret[i].isPath = 0;
+		ret[i].f = -1;
 		if (pos == 0)
 			ret[i].north = -1;
 		if (pos == width - 1)
@@ -134,7 +135,7 @@ void init_grid(int length, int width)
 	start.y = 0;
 	end.x = width - 1;
 	end.y = length - 1;
-	bf_solve(grid, start, end);
+	solve_A(grid, start, end);
 	grid[start.x][start.y].isPath = 2;
 	grid[end.x][end.y].isPath = 3;
 	print_grid(grid, length, width);

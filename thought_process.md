@@ -89,3 +89,15 @@ also had to add parent value to get the path that lead to solution and mark it a
 using the isVisited value from grid struct to check it and i use the parent value to find the real head of the list and free it so now i can remove the prev value
 
 The print is fucking horrendous tho
+
+30/09
+
+Figured most of the A* algorithm
+its a pain in the ass to implement in C but its almost done i think
+my issue is when we are checking a potential path option and we are comparing to existing elements in the open/closed lists, i dont know how to handle if it already exists and how to implement it
+multiple sites have different explanations for it
+my understanding is
+	if the current position already exists in the open list there is 2 options
+		-if the existing one has lower f, you change the f and parent of current position to the existing position in open list (the path found in already existing one is better)
+		-if the new one has lower f than the existing one, you replace the existing one by the new one
+	same if it exists in closed list
