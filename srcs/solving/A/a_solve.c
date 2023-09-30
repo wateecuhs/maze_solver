@@ -6,7 +6,7 @@
 /*   By: wateecuhs <waticouzz@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/24 20:46:21 by wateecuhs         #+#    #+#             */
-/*   Updated: 2023/09/30 02:55:21 by wateecuhs        ###   ########.fr       */
+/*   Updated: 2023/09/30 03:48:47 by wateecuhs        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ typedef struct s_node
 	coords			data;
 	struct s_node	*parent;
 	struct s_node	*next;
+	struct s_node	*bad_solution;
 }	node;
 
 node	*ft_create_elem(coords data, node *parent, int f, int g)
@@ -31,6 +32,7 @@ node	*ft_create_elem(coords data, node *parent, int f, int g)
 	ret->g = g;
 	ret->parent = parent;
 	ret->next = NULL;
+	ret->bad_solution = NULL;
 	return (ret);
 }
 
@@ -49,8 +51,6 @@ void pop_elem(node **begin_list, node *target)
 	node	*head;
 	node	*trailing;
 
-	printf("popping %d %d in ", target->data.x, target->data.y);
-	print_list(*begin_list);
 	head = *begin_list;
 	if (head == target)
 	{
@@ -60,7 +60,6 @@ void pop_elem(node **begin_list, node *target)
 		{
 			*begin_list = (*begin_list)->next;
 		}
-		printf("popped it\n");
 		return ;
 	}
 	while (head)
@@ -136,14 +135,14 @@ node	*smallest_f(node	*list_open)
 	return (ft_list_at(list_open, smallest_coords));
 }
 
-void ft_list_push_back(node **begin_list, coords data, int f, node *parent, int g)
+node	*ft_list_push_back(node **begin_list, coords data, int f, node *parent, int g)
 {
 	node	*head;
 
 	if (!(*begin_list))
 	{
 		*begin_list = ft_create_elem(data, parent, f, g);
-		return ;
+		return (*begin_list);
 	}
 	head = *begin_list;
 	while (head->next)
@@ -151,6 +150,24 @@ void ft_list_push_back(node **begin_list, coords data, int f, node *parent, int 
 		head = head->next;
 	}
 	head->next = ft_create_elem(data, parent, f, g);
+	return (head->next);
+}
+
+void ft_pop_adding(node **begin_list, node *to_add)
+{
+	node	*head;
+
+	if (!(*begin_list))
+	{
+		*begin_list = to_add;
+		return ;
+	}
+	head = *begin_list;
+	while (head->bad_solution)
+	{
+		head = head->bad_solution;
+	}
+	head->bad_solution = to_add;
 }
 
 // f = g + h
@@ -172,10 +189,7 @@ int	handle_successors(t_grid **grid, coords goal, node	**list_open, node	**list_
 		if (temp.x == goal.x && temp.y == goal.y)
 			return (1);
 		if (ft_in_list(list_open, temp, (q->g + 1)) != 1 && ft_in_list(list_closed, temp, (q->g + 1)) != 1)
-		{
 			ft_list_push_back(list_open, temp, f, q, (q->g + 1));
-			printf("added %d %d through 1\n", temp.x, temp.y);
-		}
 	}
 	if (grid[q->data.x][q->data.y].north == 0)
 	{
@@ -185,10 +199,7 @@ int	handle_successors(t_grid **grid, coords goal, node	**list_open, node	**list_
 		if (temp.x == goal.x && temp.y == goal.y)
 			return (2);
 		if (ft_in_list(list_open, temp, (q->g + 1)) != 1 && ft_in_list(list_closed, temp, (q->g + 1)) != 1)
-		{
 			ft_list_push_back(list_open, temp, f, q, (q->g + 1));
-			printf("added %d %d through 2\n", temp.x, temp.y);
-		}
 	}
 	if (grid[q->data.x][q->data.y].east == 0)
 	{
@@ -198,10 +209,7 @@ int	handle_successors(t_grid **grid, coords goal, node	**list_open, node	**list_
 		if (temp.x == goal.x && temp.y == goal.y)
 			return (3);
 		if (ft_in_list(list_open, temp, (q->g + 1)) != 1 && ft_in_list(list_closed, temp, (q->g + 1)) != 1)
-		{
 			ft_list_push_back(list_open, temp, f, q, (q->g + 1));
-			printf("added %d %d through 3\n", temp.x, temp.y);
-		}
 	}
 	if (grid[q->data.x][q->data.y].west == 0)
 	{
@@ -211,10 +219,7 @@ int	handle_successors(t_grid **grid, coords goal, node	**list_open, node	**list_
 		if (temp.x == goal.x && temp.y == goal.y)
 			return (4);
 		if (ft_in_list(list_open, temp, (q->g + 1)) != 1 && ft_in_list(list_closed, temp, (q->g + 1)) != 1)
-		{
 			ft_list_push_back(list_open, temp, f, q, (q->g + 1));
-			printf("added %d %d through 4\n", temp.x, temp.y);
-		}
 	}
 	return (0);
 }
@@ -225,7 +230,7 @@ void	ft_list_clear(node *begin_list)
 
 	while (begin_list)
 	{
-		temp = begin_list->next;
+		temp = begin_list->bad_solution;
 		free(begin_list);
 		begin_list = temp;
 	}
@@ -235,37 +240,38 @@ void	solve_A(t_grid **grid, coords start, coords goal)
 {
 	node	*list_open;
 	node	*list_closed;
+	node	*full_list;
 	node	*head;
 	node	*q;
 	int		result;
 
 	list_open = ft_create_elem(start, NULL, 0, 0);
 	list_closed = NULL;
+	full_list = NULL;
+	fflush(stdout);
 	while (list_open)
 	{
-		printf("open list\n");
-		print_list(list_open);
-		printf("close list\n");
-		print_list(list_closed);
+		fflush(stdout);
 		q = smallest_f(list_open);
 		pop_elem(&list_open, q);
-		printf("open list after pop\n");
-		print_list(list_open);
+		ft_pop_adding(&full_list, q);
 		result = handle_successors(grid, goal, &list_open, &list_closed, q);
 		if (result != 0)
 		{
 			head = q;
 			while(head->parent)
 			{
+				fflush(stdout);
 				grid[head->data.x][head->data.y].isPath = 1;
+				q = head;
 				head = head->parent;
 			}
+			ft_list_clear(full_list);
 			ft_list_clear(list_open);
-			ft_list_clear(list_closed);
 			return;
 		}
-		ft_list_push_back(&list_closed, q->data, q->f, q->parent, q->g);
+		q = ft_list_push_back(&list_closed, q->data, q->f, q->parent, q->g);
+		ft_pop_adding(&full_list, q);
 	}
-	ft_list_clear(list_open);
-	ft_list_clear(list_closed);
+	ft_list_clear(full_list);
 }

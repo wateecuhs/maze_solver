@@ -101,3 +101,9 @@ my understanding is
 		-if the existing one has lower f, you change the f and parent of current position to the existing position in open list (the path found in already existing one is better)
 		-if the new one has lower f than the existing one, you replace the existing one by the new one
 	same if it exists in closed list
+
+generation of the maze isnt totally random
+it generates a random number between 0 and 3 and does a full loop (ie: 2-3-0-1 or 3-0-1-2 or 1-2-3-0)
+this means for the first wall we break it has 75% chance of being south (0) and 25% chance of being east(25%)
+because it cant be north or west it will do the loop so 2-3-0-1 and 3-0-1-2 so 0 goes first in 3 out of 4 cases
+this needs to be fixed somehow but its only an issue for 0:0 starts (i think)
