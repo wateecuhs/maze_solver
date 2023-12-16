@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Visualization</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+		.table{
+			margin-right: auto;
+			margin-left: auto;
+			width: auto;
+		}
+        .cell{
+            width: 20px;
+            height: 20px;
+        	border: 1px solid rgb(0, 0, 0);
+			background-color:rgb(239, 241, 234);
+        }
+		.wall{
+            width: 20px;
+            height: 20px;
+        	border: 1px solid rgb(0, 0, 0);
+			background-color:rgb(46, 46, 46);
+        }
+    </style>
+</head>
+<body>
+    <h1>Maze Visualization</h1>
+    <table class="table">
+		<td class="wall"></td>
+			{% for cell in grid[0] %}
+			<td class="wall"></td>
+			<td class="wall"></td>
+			{% endfor %}
+        {% for row in grid %}
+            <tr>
+				<td class="wall"></td>
+                {% for cell in row %}
+					<td class="cell"></td>
+					{% if cell.east == 1 %}
+						<td class="cell"></td>
+					{% else %}
+						<td class="wall"></td>
+					{% endif %}
+                {% endfor %}
+            </tr>
+			<tr>
+				<td class="wall"></td>
+                {% for cell in row %}
+					{% if cell.south == 1 %}
+						<td class="cell"></td>
+					{% else %}
+						<td class="wall"></td>
+					{% endif %}
+					<td class="wall"></td>
+				{% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
