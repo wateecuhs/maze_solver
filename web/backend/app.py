@@ -1,7 +1,9 @@
 from flask import Flask, render_template
 import random
+from solve import *
+import queue
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
 class Grid:
     def __init__(self):
@@ -43,11 +45,14 @@ def generate_maze(grid, i, j):
 
 
 
-@app.route('/')
+""" @app.route('/')
 def visualize_maze():
 	grid = [[Grid() for _ in range(10)] for _ in range(10)]
 	generate_maze(grid, 0, 0)
-	return render_template('maze.html', grid=grid)
+	return render_template('maze.html', grid=grid) """
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    grid = [[Grid() for _ in range(10)] for _ in range(10)]
+    generate_maze(grid, 0, 0)
+    a_solve(grid, (0, 0), (9, 9))
+    # app.run(debug=True)
