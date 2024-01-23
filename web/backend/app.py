@@ -1,58 +1,61 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify, request
+import numpy as np
 import random
+import matplotlib.pyplot as plt
 from solve import *
 import queue
 
-# app = Flask(__name__)
+app = Flask(__name__)
 
-class Grid:
-    def __init__(self):
-        self.north = 0
-        self.south = 0
-        self.east = 0
-        self.west = 0
-        self.visited = 0
+def in_bounds_t(grid, new_coords):
+	len_row = len(grid)
+	len_cols = len(grid[0]) if len_row > 0 else 0
+	return 0 <= new_coords[0] < len_row and 0 <= new_coords[1] < len_cols
 
-def in_bounds(grid, i, j):
-    len_row = len(grid)
-    len_cols = len(grid[0]) if len_row > 0 else 0
-    return 0 <= i < len_row and 0 <= j < len_cols
+def generate_maze(maze, start_coords):
+	x, y = start_coords
+	maze[2*x+1, 2*y+1] = 0
+	stack = [(x, y)]
+	while len(stack) > 0:
+		print(f"{x} {y}")
+		x, y = stack[-1]
+		directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+		random.shuffle(directions)
+		for dx, dy in directions:
+			nx, ny = x + dx, y + dy
+			if nx >= 0 and ny >= 0 and 2*nx+1 < maze.shape[0] and 2*ny+1 < maze.shape[1] and maze[2*nx+1, 2*ny+1] == 1:
+				maze[2*nx+1, 2*ny+1] = 0
+				maze[2*x+1+dx, 2*y+1+dy] = 0
+				stack.append((nx, ny))
+				break
+		else:
+			stack.pop()
 
-def generate_maze(grid, i, j):
-    grid[i][j].visited = 1
+@app.route('/solve_maze')
+def solve_button():
+	a_solve(maze, (0,0), (10, 10))
+	return jsonify(maze.tolist())
 
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    random.shuffle(directions)
+@app.route('/toggle_cell')
+def toggle_cell():
+    row = int(request.args.get('row'))
+    col = int(request.args.get('col'))
+    maze[row, col] = 1 - maze[row, col]
 
-    for direction in directions:
-        new_i, new_j = i + direction[0], j + direction[1]
+    return jsonify({'value': maze[row, col]})
 
-        if in_bounds(grid, new_i, new_j) and grid[new_i][new_j].visited == 0:
-            if direction == (0, 1):  # Move to the right
-                grid[i][j].east = 1
-                grid[new_i][new_j].west = 1
-            elif direction == (1, 0):  # Move down
-                grid[i][j].south = 1
-                grid[new_i][new_j].north = 1
-            elif direction == (0, -1):  # Move to the left
-                grid[i][j].west = 1
-                grid[new_i][new_j].east = 1
-            elif direction == (-1, 0):  # Move up
-                grid[i][j].north = 1
-                grid[new_i][new_j].south = 1
-
-            generate_maze(grid, new_i, new_j)
-
-
-
-""" @app.route('/')
+@app.route('/')
 def visualize_maze():
-	grid = [[Grid() for _ in range(10)] for _ in range(10)]
-	generate_maze(grid, 0, 0)
-	return render_template('maze.html', grid=grid) """
+	height = 15
+	width = 15
+	global maze
+	maze = np.ones((height, width))
+	generate_maze(maze, (0, 0))
+	return render_template('maze.html', grid=maze)
 
 if __name__ == '__main__':
-    grid = [[Grid() for _ in range(10)] for _ in range(10)]
-    generate_maze(grid, 0, 0)
-    a_solve(grid, (0, 0), (9, 9))
-    # app.run(debug=True)
+	height = 15
+	width = 15
+	maze = np.ones((height, width))
+	generate_maze(maze, (0, 0))
+	app.run(debug=True)

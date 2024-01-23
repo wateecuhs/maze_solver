@@ -26,40 +26,62 @@
         	border: 1px solid rgb(0, 0, 0);
 			background-color:rgb(46, 46, 46);
         }
+		.visited{
+            width: 20px;
+            height: 20px;
+        	border: 1px solid rgb(0, 0, 0);
+			background-color:rgb(255, 183, 223);
+        }
     </style>
 </head>
 <body>
     <h1>Maze Visualization</h1>
-    <table class="table">
-		<td class="wall"></td>
-			{% for cell in grid[0] %}
-			<td class="wall"></td>
-			<td class="wall"></td>
-			{% endfor %}
+	<button onclick="solveMaze()">Solve Maze</button>
+	<table class="table">
         {% for row in grid %}
             <tr>
-				<td class="wall"></td>
-                {% for cell in row %}
-					<td class="cell"></td>
-					{% if cell.east == 1 %}
-						<td class="cell"></td>
-					{% else %}
-						<td class="wall"></td>
-					{% endif %}
+				{% set outer_loop = loop %}
+                {% for cell_value in row %}
+					{% set cell_class = 'wall' if cell_value == 1 else ('path' if cell_value == 2 else 'cell') %}
+                    <td class="{{ cell_class }}" onclick="toggleCell({{ outer_loop.index0 }}, {{ loop.index0 }})"></td>
                 {% endfor %}
-            </tr>
-			<tr>
-				<td class="wall"></td>
-                {% for cell in row %}
-					{% if cell.south == 1 %}
-						<td class="cell"></td>
-					{% else %}
-						<td class="wall"></td>
-					{% endif %}
-					<td class="wall"></td>
-				{% endfor %}
             </tr>
         {% endfor %}
     </table>
+	<script>
+        function toggleCell(row, col) {
+            // Send a request to the server to update the maze value
+            fetch(`/toggle_cell?row=${row}&col=${col}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update the cell class based on the new value
+                    const cell = document.querySelector(`.table tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
+                    cell.className = data.value === 1 ? 'wall' : 'cell';
+                })
+                .catch(error => console.error('Error:', error));
+        }
+		function solveMaze() {
+        fetch('/solve_maze')
+            .then(response => response.json())
+            .then(data => {
+                const solution = data.solution;
+                // Update the visualized maze with the solved maze
+                updateMazeVisualization(solution);
+            })
+            .catch(error => console.error('Error:', error));
+    	}
+	
+    	function updateMazeVisualization(newMaze) {
+    	    // Replace the current maze with the solved maze
+    	    const mazeTable = document.querySelector('.table');
+    	    for (let i = 0; i < newMaze.length; i++) {
+    	        const row = mazeTable.rows[i + 1]; // Skip the first row with wall cells
+    	        for (let j = 0; j < newMaze[i].length; j++) {
+    	            const cell = row.cells[j];
+    	            cell.className = newMaze[i][j] === 1 ? 'wall' : 'cell';
+    	        }
+    	    }
+    	}
+    	</script>
 </body>
 </html>
