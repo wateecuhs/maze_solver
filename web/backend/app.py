@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_from_directory
 import numpy as np
 import random
 import matplotlib.pyplot as plt
@@ -14,7 +14,7 @@ def in_bounds_t(grid, new_coords):
 
 def generate_maze(maze, start_coords):
 	x, y = start_coords
-	maze[2*x+1, 2*y+1] = 0
+	maze[2*x+1, 2*y+1] = 2
 	stack = [(x, y)]
 	while len(stack) > 0:
 		print(f"{x} {y}")
@@ -33,29 +33,38 @@ def generate_maze(maze, start_coords):
 
 @app.route('/solve_maze')
 def solve_button():
-	a_solve(maze, (0,0), (10, 10))
-	return jsonify(maze.tolist())
+	solution = a_solve(maze, (1, 1))
+	solution.reverse()
+	return jsonify(solution)
+
+@app.route('/change_start')
+def solve_button():
+	row = int(request.args.get('row'))
+	col = int(request.args.get('col'))
+	
+	return jsonify(solution)
 
 @app.route('/toggle_cell')
 def toggle_cell():
-    row = int(request.args.get('row'))
-    col = int(request.args.get('col'))
-    maze[row, col] = 1 - maze[row, col]
+	row = int(request.args.get('row'))
+	col = int(request.args.get('col'))
+	maze[row, col] = 1 - maze[row, col]
 
-    return jsonify({'value': maze[row, col]})
+	return jsonify({'value': maze[row, col]})
+
+@app.route('/<path:filename>')
+def serve_js(filename):
+	return send_from_directory('js', filename)
 
 @app.route('/')
 def visualize_maze():
-	height = 15
-	width = 15
 	global maze
+
+	height = 51
+	width = 51
 	maze = np.ones((height, width))
 	generate_maze(maze, (0, 0))
 	return render_template('maze.html', grid=maze)
 
 if __name__ == '__main__':
-	height = 15
-	width = 15
-	maze = np.ones((height, width))
-	generate_maze(maze, (0, 0))
 	app.run(debug=True)
