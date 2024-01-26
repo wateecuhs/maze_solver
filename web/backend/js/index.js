@@ -57,16 +57,13 @@ function allowDrop(event) {
 
 function drop(event, row, col) {
 	event.preventDefault();
-	console.log(row);
-	console.log(col);
 	if (draggedElement) {
 		const dropTarget = event.target;
 		if ((dropTarget.classList.contains('cell') || dropTarget.classList.contains('cell1'))
 			&& draggedElement.classList.contains('start')) {
-		const tempClass = draggedElement.className;
 			fetch(`/change_start?row=${row}&col=${col}`)
-			draggedElement.className = dropTarget.className;
-			dropTarget.className = tempClass;
+			draggedElement.classList.remove('start');
+			dropTarget.classList.add('start');
 			dropTarget.classList.remove('dragging');
 			draggedElement.draggable = 'false';
 			dropTarget.draggable = 'true';
@@ -129,23 +126,7 @@ const table = document.getElementById('mazeTable');
 		const tr = document.createElement('tr');
 		row.forEach((cellValue, index) => {
 			const td = document.createElement('td');
-			if (cellValue === 2) {
-				td.className = 'start';
-				td.onclick = function () {
-					toggleCell(tr.rowIndex, td.cellIndex);
-				};
-				td.draggable = true;
-				td.ondragstart = function (event) {
-					dragStart(event);
-				};
-				td.ondrop = function (event) {
-					drop(event, tr.rowIndex, td.cellIndex);
-				};
-				td.ondragover = function (event) {
-					allowDrop(event);
-				};
-			}
-			else if (cellValue === 1) {
+			if (cellValue === 1) {
 				td.className = 'wall';
 				td.onclick = function () {
 					toggleCell(tr.rowIndex, td.cellIndex);
@@ -160,13 +141,14 @@ const table = document.getElementById('mazeTable');
 					allowDrop(event);
 				};
 			}
-			else if (cellValue === 0 && (outer_index + index) % 2 === 0) {
+			else if ((outer_index + index) % 2 === 0) {
 				
-				console.log("in here\n");
-				td.className = 'cell1';
+				td.className = cellValue === 2 ?'cell1 start' : 'cell1';
 				td.onclick = function () {
 					toggleCell(tr.rowIndex, td.cellIndex);
 				};
+				if (cellValue === 2)
+					td.draggable = true;
 				td.ondragstart = function (event) {
 					dragStart(event);
 				};
@@ -178,10 +160,12 @@ const table = document.getElementById('mazeTable');
 				};
 			}
 			else {
-				td.className = 'cell';
+				td.className = cellValue === 2 ?'cell start' : 'cell';
 				td.onclick = function () {
 					toggleCell(tr.rowIndex, td.cellIndex);
 				};
+				if (cellValue === 2)
+					td.draggable = true;
 				td.ondragstart = function (event) {
 					dragStart(event);
 				};
