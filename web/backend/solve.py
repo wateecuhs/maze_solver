@@ -12,15 +12,16 @@ class Node:
 def	get_start(grid):
 	rows = len(grid)
 	cols = len(grid[0])
+	ret = (-1, -1)
 	i = 0
 	while i < rows:
 		j = 0
 		while j < cols:
 			if grid[i, j] == 2:
-				return (i, j)
+				ret = (i, j)
 			j += 1
 		i += 1
-	return (-1, -1)
+	return ret
 
 def in_bounds(grid, i, j):
     len_row = len(grid)

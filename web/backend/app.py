@@ -17,7 +17,6 @@ def generate_maze(maze, start_coords):
 	maze[2*x+1, 2*y+1] = 2
 	stack = [(x, y)]
 	while len(stack) > 0:
-		print(f"{x} {y}")
 		x, y = stack[-1]
 		directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 		random.shuffle(directions)
@@ -33,16 +32,22 @@ def generate_maze(maze, start_coords):
 
 @app.route('/solve_maze')
 def solve_button():
-	solution = a_solve(maze, (1, 1))
+	solution = a_solve(maze, get_start(maze))
 	solution.reverse()
 	return jsonify(solution)
 
 @app.route('/change_start')
-def solve_button():
+def change_start():
 	row = int(request.args.get('row'))
 	col = int(request.args.get('col'))
-	
-	return jsonify(solution)
+	try:
+		coords_start = get_start(maze)
+		maze[coords_start[0], coords_start[1]] = 0
+		maze[row, col] = 2
+	except Exception as err:
+		print(err)
+	return jsonify([(row, col), coords_start])
+
 
 @app.route('/toggle_cell')
 def toggle_cell():
@@ -52,18 +57,56 @@ def toggle_cell():
 
 	return jsonify({'value': maze[row, col]})
 
+@app.route('/generate', methods=['POST'])
+def	generateMaze():
+	data = request.json
+	width = data.get('width')
+	height = data.get('height')
+	width = width * 0.65
+	cols = int(width / 20)
+	if cols % 2 == 0:
+		cols = cols - 1
+	height = height * 0.85
+	rows = height / 20
+	rows = int(rows)
+	if rows % 2 == 0:
+		rows = rows - 1
+	global maze
+	maze = np.ones((rows, cols))
+	generate_maze(maze, (0, 0))
+	return jsonify(maze.tolist())
+
 @app.route('/<path:filename>')
 def serve_js(filename):
 	return send_from_directory('js', filename)
 
+@app.route('/updateWindowSize', methods=['POST'])
+def update_window_size():
+	data = request.json
+	width = data.get('width')
+	height = data.get('height')
+
+	width = width * 0.65
+	cols = int(width / 20)
+	if cols % 2 == 0:
+		cols = cols - 1
+	height = height * 0.85
+	rows = height / 20
+	rows = int(rows)
+	if rows % 2 == 0:
+		rows = rows - 1
+	global maze
+	maze = np.zeros((rows, cols))
+	# generate_maze(maze, (0, 0))
+
+	return jsonify(maze.tolist())
+
 @app.route('/')
 def visualize_maze():
 	global maze
-
-	height = 51
-	width = 51
-	maze = np.ones((height, width))
-	generate_maze(maze, (0, 0))
+	height = 21
+	width = 21
+	maze = np.zeros((height, width))
 	return render_template('maze.html', grid=maze)
 
 if __name__ == '__main__':
