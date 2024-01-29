@@ -4,38 +4,57 @@ function toggleCell(row, col) {
 		.then(data => {
 			const cell = document.querySelector(`.table tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
 			if (data.value === 1) {
-				cell.className = 'wall';
+				cell.classList.remove('cell');
+				cell.classList.remove('cel1');
+				cell.classList.add('wall');
 			}
 			else if (data.value === 0 && (row + col) % 2 === 0) {
-				cell.className = 'cell1';
+				cell.classList.remove('wall');
+				cell.classList.add('cell1');
 			}
 			else {
-				cell.className = 'cell';
+				cell.classList.remove('wall');
+				cell.classList.add('cell');
 			}
 		})
 		.catch(error => console.error('Error:', error));
 }
 
-function sleep(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
 function solveMaze() {
 	fetch('/solve_maze')
 		.then(response => response.json())
 		.then(data => {
-			console.log(data);
+			// console.log(data[0]);
+			function processSolutionPath2() {
+				console.log(index);
+				if (index < data[1].length) {
+					console.log("here");
+					const solution_path = data[1][index];
+					const row = solution_path[0];
+					const col = solution_path[1];
+					const cell = document.querySelector(`.table tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
+					cell.classList.remove('tmp');
+					cell.classList.add('tmp2');
+					index++;
+					setTimeout(processSolutionPath2, data.length > 30 ? 5000 / data.length : 50);
+				}
+			}
 			let index = 0;
-
 			function processSolutionPath() {
-				if (index < data.length) {
-					const solution_path = data[index];
+				if (index < data[0][0].length) {
+					const solution_path = data[0][0][index];
 					console.log(solution_path);
 					const row = solution_path[0];
 					const col = solution_path[1];
 					const cell = document.querySelector(`.table tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
-					cell.className = 'path';
+					cell.textContent = data[0][1][index];
+					cell.classList.add('tmp');
 					index++;
-					setTimeout(processSolutionPath, data.length > 30 ? 5000 / data.length : 50); // Adjust the delay (in milliseconds) as needed
+					setTimeout(processSolutionPath, data.length > 30 ? 5000 / data.length : 50);
+				}
+				else {
+					index = 0;
+					processSolutionPath2();
 				}
 			}
 			processSolutionPath();
@@ -44,15 +63,138 @@ function solveMaze() {
 }
 
 let draggedElement;
+let isStart;
 
 function dragStart(event) {
+	isStart = 0;
 	draggedElement = event.target;
+	const transparentImage = new Image();
+	transparentImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACV0lEQVR42tWVsW4TQBCG73a3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W';
+	event.dataTransfer.setDragImage(transparentImage, 0, 0);
 	event.dataTransfer.setData('text/plain', '');
-	draggedElement.classList.add('dragging');
+}
+
+function dragStartIsStart(event) {
+	isStart = 1;
+	draggedElement = event.target;
+	const transparentImage = new Image();
+	transparentImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACV0lEQVR42tWVsW4TQBCG73a3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W';
+	event.dataTransfer.setDragImage(transparentImage, 0, 0);
+	event.dataTransfer.setData('text/plain', '');
+}
+
+function dragStartIsGoal(event) {
+	isStart = 2;
+	draggedElement = event.target;
+	const transparentImage = new Image();
+	transparentImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACV0lEQVR42tWVsW4TQBCG73a3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W3a3W';
+	event.dataTransfer.setDragImage(transparentImage, 0, 0);
+	event.dataTransfer.setData('text/plain', '');
 }
 
 function allowDrop(event) {
   event.preventDefault();
+}
+
+let dropTarget = null;
+
+function dragOver(event, row, col) {
+    event.preventDefault();
+	if (isStart === 1)
+	{
+		if (dropTarget != null) {
+			dropTarget.classList.remove('start');
+			let tmp_row = dropTarget.parentNode.rowIndex;
+			let tmp_col = dropTarget.cellIndex;
+			dropTarget.onclick = function () {
+				toggleCell(tmp_row, tmp_col);
+			};
+			dropTarget.ondragover = function (event) {
+				dragOver(event, tmp_row, tmp_col);
+			};
+			dropTarget.ondragstart = function (event) {
+				dragStart(event);
+			};
+		}
+		dropTarget = document.querySelector(`.table tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
+		if (dropTarget.classList.contains('wall')) {
+			toggleCell(row, col);
+		}
+		dropTarget.classList.add('start');
+		draggedElement.classList.remove('start');
+		dropTarget.onclick = null;
+		dropTarget.ondragover = function (event) {
+			dragOverStart(event, row, col);
+		};
+		dropTarget.ondragstart = function (event) {
+			dragStartIsStart(event);
+		};
+		let tmp_row = draggedElement.parentNode.rowIndex;
+		let tmp_col = draggedElement.cellIndex;
+		draggedElement.onclick = function () {
+			toggleCell(tmp_row, tmp_col);
+		};
+		draggedElement.ondragover = function (event) {
+			dragOver(event, tmp_row, tmp_col);
+		};
+		draggedElement.ondragstart = function (event) {
+			dragStart(event);
+		};
+		dropTarget.classList.add('start');
+		fetch(`/change_start?row=${row}&col=${col}`)
+	}
+	else if (isStart === 2)
+	{
+		if (dropTarget != null) {
+			dropTarget.classList.remove('goal');
+			let tmp_row = dropTarget.parentNode.rowIndex;
+			let tmp_col = dropTarget.cellIndex;
+			dropTarget.onclick = function () {
+				toggleCell(tmp_row, tmp_col);
+			};
+			dropTarget.ondragover = function (event) {
+				dragOver(event, tmp_row, tmp_col);
+			};
+			dropTarget.ondragstart = function (event) {
+				dragStart(event);
+			};
+		}
+		dropTarget = document.querySelector(`.table tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
+		if (dropTarget.classList.contains('wall')) {
+			toggleCell(row, col);
+		}
+		dropTarget.classList.add('goal');
+		draggedElement.classList.remove('goal');
+		dropTarget.onclick = null;
+		dropTarget.ondragover = function (event) {
+			dragOverStart(event, row, col);
+		};
+		dropTarget.ondragstart = function (event) {
+			dragStartIsGoal(event);
+		};
+		let tmp_row = draggedElement.parentNode.rowIndex;
+		let tmp_col = draggedElement.cellIndex;
+		draggedElement.onclick = function () {
+			toggleCell(tmp_row, tmp_col);
+		};
+		draggedElement.ondragover = function (event) {
+			dragOver(event, tmp_row, tmp_col);
+		};
+		draggedElement.ondragstart = function (event) {
+			dragStart(event);
+		};
+		dropTarget.classList.add('goal');
+		fetch(`/change_goal?row=${row}&col=${col}`)
+	}
+	else if (dropTarget === null || dropTarget != document.querySelector(`.table tr:nth-child(${row + 1}) td:nth-child(${col + 1})`))
+	{
+		dropTarget = document.querySelector(`.table tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
+		toggleCell(row, col);
+	}
+}
+
+function dragOverStart(event, row, col) {
+    event.preventDefault();
 }
 
 function drop(event, row, col) {
@@ -128,54 +270,57 @@ const table = document.getElementById('mazeTable');
 			const td = document.createElement('td');
 			if (cellValue === 1) {
 				td.className = 'wall';
-				td.onclick = function () {
-					toggleCell(tr.rowIndex, td.cellIndex);
-				};
-				td.ondragstart = function (event) {
-					dragStart(event);
-				};
-				td.ondrop = function (event) {
-					drop(event, tr.rowIndex, td.cellIndex);
-				};
-				td.ondragover = function (event) {
-					allowDrop(event);
-				};
 			}
 			else if ((outer_index + index) % 2 === 0) {
 				
-				td.className = cellValue === 2 ?'cell1 start' : 'cell1';
-				td.onclick = function () {
-					toggleCell(tr.rowIndex, td.cellIndex);
-				};
-				if (cellValue === 2)
-					td.draggable = true;
-				td.ondragstart = function (event) {
-					dragStart(event);
-				};
-				td.ondrop = function (event) {
-					drop(event, tr.rowIndex, td.cellIndex);
-				};
+				if (cellValue === 3)
+					td.className = 'cell1 goal';
+				else if (cellValue === 2)
+					td.className = 'cell1 start';
+				else
+					td.className = 'cell1';
+			}
+			else {
+				if (cellValue === 3)
+					td.className = 'cell goal';
+				else if (cellValue === 2)
+					td.className = 'cell start';
+				else
+					td.className = 'cell';
+			}
+			if (cellValue === 2 || cellValue === 3) {
+				if (cellValue === 2) {
+					td.ondragstart = function (event) {
+						dragStartIsStart(event);
+					};
+				}
+				else {
+					td.ondragstart = function (event) {
+						dragStartIsGoal(event);
+					};
+				}
 				td.ondragover = function (event) {
-					allowDrop(event);
+					dragOverStart(event, outer_index, index);
+				};
+				td.ondragstart = function (event) {
+					dragStartIsStart(event);
 				};
 			}
 			else {
-				td.className = cellValue === 2 ?'cell start' : 'cell';
 				td.onclick = function () {
-					toggleCell(tr.rowIndex, td.cellIndex);
+					toggleCell(outer_index, index);
 				};
-				if (cellValue === 2)
-					td.draggable = true;
+				td.ondragover = function (event) {
+					dragOver(event, outer_index, index);
+				};
 				td.ondragstart = function (event) {
 					dragStart(event);
 				};
-				td.ondrop = function (event) {
-					drop(event, tr.rowIndex, td.cellIndex);
-				};
-				td.ondragover = function (event) {
-					allowDrop(event);
-				};
 			}
+			td.ondrop = function (event) {
+				drop(event, outer_index, index);
+			};
+			td.draggable = true;
 			tr.appendChild(td);
 		});
 	table.appendChild(tr);

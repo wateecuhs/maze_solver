@@ -7,6 +7,11 @@
 	<script type="text/javascript" src="index.js"></script>
 	<title>Maze Visualization</title>
 	<style>
+		@font-face { font-family: Honk; src: url('Honk.ttf'); } 
+		h1 {
+			font-family: Honk;
+			font-size: 60px;
+		}
 		table {
 			border-collapse: collapse;
 		}
@@ -19,36 +24,66 @@
 			flex-direction: column;
 			align-items: center;
 			justify-items: center;
+			table-layout: fixed;
 			box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+			white-space:nowrap
 		}
 		.cell1{
 			width: 20px;
 			height: 20px;
 			border: 0px solid rgb(60, 60, 60);
 			background-color:rgb(188, 188, 188);
+			text-align: center;
+			vertical-align: middle;
+			font-size: 8px;
+			white-space:nowrap
 		}
 		.cell{
 			width: 20px;
 			height: 20px;
 			border: 0px solid rgb(60, 60, 60);
 			background-color:rgb(239, 241, 234);
+			text-align: center;
+			vertical-align: middle;
+			font-size: 8px;
+			white-space:nowrap
 		}
 		.wall{
 			width: 20px;
 			height: 20px;
 			border: 0px solid rgb(60, 60, 60);
 			background-color:rgb(46, 46, 46);
-		}
-		.path{
-			width: 20px;
-			height: 20px;
-			border: 0px solid rgb(60, 60, 60);
-			background-color:rgb(36, 123, 160);
+			text-align: center;
+			vertical-align: middle;
+			font-size: 8px;
+			white-space:nowrap
 		}
 		.start{
 			background-image: url('./1f3c1.png');
-   		 	background-size: contain; /* or cover, or specific dimensions */
+   		 	background-size: contain;
     		background-repeat: no-repeat;
+			font-size: 8px;
+		}
+		.goal{
+			background-image: url('./target.png');
+   		 	background-size: contain;
+    		background-repeat: no-repeat;
+		}
+		.tmp{
+			background-image: url('./Untitled.png');
+   		 	background-size: contain;
+    		background-repeat: no-repeat;
+			text-align: center;
+			vertical-align: middle;
+			font-size: 8px;
+		}
+		.tmp2{
+			background-image: url('./Untitled2.png');
+   		 	background-size: contain;
+    		background-repeat: no-repeat;
+			text-align: center;
+			vertical-align: middle;
+			font-size: 8px;
 		}
 		.menu{
 			background-color:#F9F9ED;
@@ -85,13 +120,25 @@
 			justify-content: center;
 		}
 		.dragging {
-			opacity: 1;
+			opacity: 0;
+		}
+		.visited{
+			width: 20px;
+			height: 20px;
+			border: 0px solid rgb(60, 60, 60);
+			background-color:rgba(158, 173, 179, 0.509);
+		}
+		.path{
+			width: 20px;
+			height: 20px;
+			border: 0px solid rgb(60, 60, 60);
+			background-color:rgb(36, 123, 160);
 		}
 	</style>
 </head>
 <body>
 	<div class="menu">
-	<h1>Maze Visualization</h1>
+	<h1>'Mazing</h1>
 	<button onclick="generateMaze()">Generate</button>
 	<button onclick="solveMaze()">Solve Maze</button>
 	</div>

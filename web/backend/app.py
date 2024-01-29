@@ -33,7 +33,7 @@ def generate_maze(maze, start_coords):
 @app.route('/solve_maze')
 def solve_button():
 	solution = a_solve(maze, get_start(maze))
-	solution.reverse()
+	solution[1].reverse()
 	return jsonify(solution)
 
 @app.route('/change_start')
@@ -48,6 +48,17 @@ def change_start():
 		print(err)
 	return jsonify([(row, col), coords_start])
 
+@app.route('/change_goal')
+def change_goal():
+	row = int(request.args.get('row'))
+	col = int(request.args.get('col'))
+	try:
+		coords_start = get_goal(maze)
+		maze[coords_start[0], coords_start[1]] = 0
+		maze[row, col] = 3
+	except Exception as err:
+		print(err)
+	return jsonify([(row, col), coords_start])
 
 @app.route('/toggle_cell')
 def toggle_cell():
@@ -74,6 +85,7 @@ def	generateMaze():
 	global maze
 	maze = np.ones((rows, cols))
 	generate_maze(maze, (0, 0))
+	maze[len(maze) - 2, len(maze[0]) - 2] = 3
 	return jsonify(maze.tolist())
 
 @app.route('/<path:filename>')
@@ -97,8 +109,8 @@ def update_window_size():
 		rows = rows - 1
 	global maze
 	maze = np.zeros((rows, cols))
-	# generate_maze(maze, (0, 0))
-
+	maze[1, 1] = 2
+	maze[len(maze) - 2, len(maze[0]) - 2] = 3
 	return jsonify(maze.tolist())
 
 @app.route('/')
@@ -107,6 +119,7 @@ def visualize_maze():
 	height = 21
 	width = 21
 	maze = np.zeros((height, width))
+	maze[1, 1] = 2
 	return render_template('maze.html', grid=maze)
 
 if __name__ == '__main__':
