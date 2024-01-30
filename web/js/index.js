@@ -1,6 +1,21 @@
-let wipeSolve = false;
+function removeSolutionDisplay() {
+    const cells = document.querySelectorAll('.table td');
+    cells.forEach(cell => {
+        cell.classList.remove('tmp');
+        cell.classList.remove('tmp2');
+		cell.textContent = null;
+    });
+}
+
+function addClickEventListeners() {
+    const cells = document.querySelectorAll('.table td');
+    cells.forEach(cell => {
+        cell.addEventListener('click', removeSolutionDisplay);
+    });
+}
 
 function toggleCell(row, col) {
+	fetch
 	fetch(`/toggle_cell?row=${row}&col=${col}`)
 		.then(response => response.json())
 		.then(data => {
@@ -65,7 +80,7 @@ function solveMaze() {
 				}
 			}
 			processSolutionPath();
-			wipeSolve = true;
+			addClickEventListeners();
 		})
 		.catch(error => console.error('Error:', error));
 }
