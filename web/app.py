@@ -74,11 +74,11 @@ def	generateMaze():
 	width = data.get('width')
 	height = data.get('height')
 	width = width * 0.65
-	cols = int(width / 20)
+	cols = int(width / 30)
 	if cols % 2 == 0:
 		cols = cols - 1
 	height = height * 0.85
-	rows = height / 20
+	rows = height / 30
 	rows = int(rows)
 	if rows % 2 == 0:
 		rows = rows - 1
@@ -99,11 +99,11 @@ def update_window_size():
 	height = data.get('height')
 
 	width = width * 0.65
-	cols = int(width / 20)
+	cols = int(width / 30)
 	if cols % 2 == 0:
 		cols = cols - 1
 	height = height * 0.85
-	rows = height / 20
+	rows = height / 30
 	rows = int(rows)
 	if rows % 2 == 0:
 		rows = rows - 1

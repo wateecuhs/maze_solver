@@ -1,3 +1,8 @@
+function updateGlobalVariable() {
+	showValues = document.getElementById('Checkbox').checked;
+	console.log("changed value");
+}
+
 function toggleCell(row, col) {
 	fetch(`/toggle_cell?row=${row}&col=${col}`)
 		.then(response => response.json())
@@ -47,7 +52,9 @@ function solveMaze() {
 					const row = solution_path[0];
 					const col = solution_path[1];
 					const cell = document.querySelector(`.table tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
-					cell.textContent = data[0][1][index];
+					if (showValues) {
+						cell.textContent = data[0][1][index];
+					}
 					cell.classList.add('tmp');
 					index++;
 					setTimeout(processSolutionPath, data.length > 30 ? 5000 / data.length : 50);
@@ -75,6 +82,7 @@ function dragStart(event) {
 }
 
 function dragStartIsStart(event) {
+	console.log("here1");
 	isStart = 1;
 	draggedElement = event.target;
 	const transparentImage = new Image();
@@ -84,6 +92,7 @@ function dragStartIsStart(event) {
 }
 
 function dragStartIsGoal(event) {
+	console.log("here2");
 	isStart = 2;
 	draggedElement = event.target;
 	const transparentImage = new Image();
@@ -102,6 +111,7 @@ function dragOver(event, row, col) {
     event.preventDefault();
 	if (isStart === 1)
 	{
+		console.log("here");
 		if (dropTarget != null) {
 			dropTarget.classList.remove('start');
 			let tmp_row = dropTarget.parentNode.rowIndex;
@@ -301,9 +311,6 @@ const table = document.getElementById('mazeTable');
 				}
 				td.ondragover = function (event) {
 					dragOverStart(event, outer_index, index);
-				};
-				td.ondragstart = function (event) {
-					dragStartIsStart(event);
 				};
 			}
 			else {
