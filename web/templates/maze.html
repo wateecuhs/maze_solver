@@ -32,7 +32,7 @@
 			width: 30px;
 			height: 30px;
 			border: 0px solid rgb(60, 60, 60);
-			background-color:rgb(188, 188, 188);
+			background-color:rgb(216, 216, 216);
 			text-align: center;
 			vertical-align: middle;
 			font-size: 8px;
@@ -145,7 +145,7 @@
 			display: inline-flex;
 			flex: 1 1 auto;
 			font-family: Inter,sans-serif;
-			font-size: 1.2rem;
+			font-size: 0.8rem;
 			font-weight: 700;
 			justify-content: center;
 			line-height: 1;
@@ -160,21 +160,26 @@
 			user-select: none;
 			-webkit-user-select: none;
 			touch-action: manipulation;
-			block-size: fit-content;
+			padding: 10px 15px 10px 15px;
 		}
 		.button-35:hover {
-		box-shadow: #121212 0 0 0 3px, transparent 0 0 0 0;
+			box-shadow: rgba(18, 18, 18, 0.657) 0 0 0 3px, transparent 0 0 0 0;
 		}
 	</style>
 </head>
 <body>
 	<div class="menu" id="menu">
-	<h1>Maze Solver</h1>
-	<div>
-		<button class="button-35" onclick="generateMaze()">Generate</button>
-		<button class="button-35" onclick="solveMaze()">Solve Maze</button>
-	</div>
-	<input type="checkbox" id="Checkbox">
+		<h1>Maze Solver</h1>
+		<div style="grid-gap: 10px; display: flex; flex-direction: column;">
+			<button class="button-35" onclick="generateMaze()">GENERATE</button>
+			<button class="button-35" onclick="solveMaze()">SOLVE MAZE</button>
+			<form autocomplete="off">
+				<label style="font-family: Inter,sans-serif;" for="checkbox">
+					Show cell values
+					<input type="checkbox" id="Checkbox" onclick="updateGlobalVariable()">
+				</label>
+		   </form>
+		</div>
 	</div>
 	<div class="border">
 	</div>
@@ -211,8 +216,6 @@
 	let showValues = false;
 	function updateGlobalVariable() {
 		showValues = document.getElementById('Checkbox').checked;
-		console.log("changed value");
 	}
-	document.getElementById('Checkbox').addEventListener('change', updateGlobalVariable);
 </script>
 </html>

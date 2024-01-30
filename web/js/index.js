@@ -1,7 +1,4 @@
-function updateGlobalVariable() {
-	showValues = document.getElementById('Checkbox').checked;
-	console.log("changed value");
-}
+let wipeSolve = false;
 
 function toggleCell(row, col) {
 	fetch(`/toggle_cell?row=${row}&col=${col}`)
@@ -33,31 +30,34 @@ function solveMaze() {
 			function processSolutionPath2() {
 				console.log(index);
 				if (index < data[1].length) {
-					console.log("here");
 					const solution_path = data[1][index];
 					const row = solution_path[0];
 					const col = solution_path[1];
 					const cell = document.querySelector(`.table tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
-					cell.classList.remove('tmp');
-					cell.classList.add('tmp2');
+					if (cell.classList.contains('start') === false && cell.classList.contains('goal') === false) {
+						cell.classList.remove('tmp');
+						cell.classList.add('tmp2');
+					}
 					index++;
-					setTimeout(processSolutionPath2, data.length > 30 ? 5000 / data.length : 50);
+					setTimeout(processSolutionPath2, data[1].length > 30 ? 4000 /  data[1].length : 50);
 				}
 			}
 			let index = 0;
 			function processSolutionPath() {
 				if (index < data[0][0].length) {
 					const solution_path = data[0][0][index];
-					console.log(solution_path);
 					const row = solution_path[0];
 					const col = solution_path[1];
 					const cell = document.querySelector(`.table tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
 					if (showValues) {
 						cell.textContent = data[0][1][index];
 					}
-					cell.classList.add('tmp');
+					if (cell.classList.contains('start') === false && cell.classList.contains('goal') === false) {
+						console.log(`${row} ${col} is not start or goal`);
+						cell.classList.add('tmp');
+					}
 					index++;
-					setTimeout(processSolutionPath, data.length > 30 ? 5000 / data.length : 50);
+					setTimeout(processSolutionPath, data[0][0].length > 30 ? 3000 /  data[0][0].length : 50);
 				}
 				else {
 					index = 0;
@@ -65,6 +65,7 @@ function solveMaze() {
 				}
 			}
 			processSolutionPath();
+			wipeSolve = true;
 		})
 		.catch(error => console.error('Error:', error));
 }
