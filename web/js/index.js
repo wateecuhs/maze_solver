@@ -1,4 +1,5 @@
 function removeSolutionDisplay() {
+	stopDisplay = true;
     const cells = document.querySelectorAll('.table td');
     cells.forEach(cell => {
         cell.classList.remove('tmp');
@@ -6,6 +7,7 @@ function removeSolutionDisplay() {
 		cell.textContent = null;
     });
 }
+let stopDisplay = false;
 
 function addClickEventListeners() {
     const cells = document.querySelectorAll('.table td');
@@ -44,7 +46,7 @@ function solveMaze() {
 			// console.log(data[0]);
 			function processSolutionPath2() {
 				console.log(index);
-				if (index < data[1].length) {
+				if (index < data[1].length && stopDisplay === false) {
 					const solution_path = data[1][index];
 					const row = solution_path[0];
 					const col = solution_path[1];
@@ -59,7 +61,8 @@ function solveMaze() {
 			}
 			let index = 0;
 			function processSolutionPath() {
-				if (index < data[0][0].length) {
+				if (index < data[0][0].length && stopDisplay === false) {
+					console.log(data[0][0].length);
 					const solution_path = data[0][0][index];
 					const row = solution_path[0];
 					const col = solution_path[1];
@@ -71,16 +74,19 @@ function solveMaze() {
 						console.log(`${row} ${col} is not start or goal`);
 						cell.classList.add('tmp');
 					}
+					let timeout = 3000 / data[0][0].length;
+					console.log(timeout);
 					index++;
-					setTimeout(processSolutionPath, data[0][0].length > 30 ? 3000 /  data[0][0].length : 50);
+					setTimeout(processSolutionPath, timeout);
 				}
 				else {
 					index = 0;
 					processSolutionPath2();
 				}
 			}
-			processSolutionPath();
+			stopDisplay = false;
 			addClickEventListeners();
+			processSolutionPath();
 		})
 		.catch(error => console.error('Error:', error));
 }
@@ -127,7 +133,6 @@ function dragOver(event, row, col) {
     event.preventDefault();
 	if (isStart === 1)
 	{
-		console.log("here");
 		if (dropTarget != null) {
 			dropTarget.classList.remove('start');
 			let tmp_row = dropTarget.parentNode.rowIndex;
@@ -289,6 +294,7 @@ function generateMaze() {
 
 function renderMaze(updatedMaze) {
 const table = document.getElementById('mazeTable');
+	stopDisplay = true;
 	table.innerHTML = '';
 	updatedMaze.forEach((row, outer_index) => {
 		const tr = document.createElement('tr');
