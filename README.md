@@ -1,6 +1,6 @@
 # Maze solver
 
-Personal project i made to learn C and algorithms.
+Small project i made to learn C and algorithms.
 
 After doing it in C, I wanted to learn how to do web dev so i tried doing it.
 Code and the languages used might be very suboptimal but it is what it is.
