@@ -8,4 +8,4 @@ Code and the languages used might be very suboptimal but it is what it is.
 (Design is heavily inspired by [this one](https://angeluriot.com/maze_solver/))
 
 ## Preview
-[Preview](https://github.com/user-attachments/assets/d6c0a601-f853-4471-bb5e-2043ee296d53)
+[maze_preview.webm](https://github.com/user-attachments/assets/c51757c2-cabe-447f-9596-a781ccb081b6)
